@@ -9,19 +9,7 @@ let vh =  window.innerHeight - window.innerWidth;
 let xx = 0;
 let yy = 0;
 
-function scaleView(x,o){
-	vw = window.innerWidth - window.innerWidth*x;
-	vh = window.innerHeight - window.innerWidth*x;
-	xx = xx/o * x;
-	yy = yy/o * x;
 
-	// 限制位置
-	if(xx > 0)  xx = 0;
-	if(xx < vw)  xx = vw;
-	if(yy > 0)  yy = 0;
-	if(yy < vh)  yy = vh;
-	$("#map").css("background-position",xx+ "px " + yy+"px");
-}
 
 $("#map").mousedown(function(e){
 	mousedownflag = true;
@@ -33,8 +21,8 @@ $("#map").mouseup(function(){
 });
 $("#map").mouseout(function(){
 	mousedownflag = false
-	console.log("ss")
 });
+$("#map").bind("contextmenu",function(){return false;});
 
 $(document).mousemove(function(e){
 	if(mousedownflag){
@@ -48,12 +36,7 @@ $(document).mousemove(function(e){
 		xx = xx+x;
 		yy = yy+y;
 		// 限制位置
-		if(xx > 0)  xx = 0;
-		if(xx < vw)  xx = vw;
-		if(yy > 0)  yy = 0;
-		if(yy < vh)  yy = vh;
-		$("#map").css("background-position",xx+ "px " + yy+"px");
-		
+		resetMap(xx,yy);
 	}
 });
 
@@ -70,3 +53,18 @@ let scrollFunc = function(e){
 }
 window.onmousewheel =  scrollFunc;
 
+function scaleView(x,o){
+	vw = window.innerWidth - window.innerWidth*x;
+	vh = window.innerHeight - window.innerWidth*x;
+	xx = xx/o * x;
+	yy = yy/o * x;
+	resetMap(xx,yy);
+}
+
+function resetMap(xx,yy){
+	if(xx > 0)  xx = 0;
+	if(xx < vw)  xx = vw;
+	if(yy > 0)  yy = 0;
+	if(yy < vh)  yy = vh;
+	$("#map").css("background-position",xx+ "px " + yy+"px");
+}
