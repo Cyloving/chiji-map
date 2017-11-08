@@ -3,14 +3,25 @@ let mousedownflag = false;
 let sx = 0;
 let sy = 0; 
 //屏幕宽高
-let vw = 2700 - window.innerWidth;
-let vh = 2700 - window.innerHeight;
+let vw =  0;
+let vh =  window.innerHeight - window.innerWidth;
+ //position 位置
+let xx = 0;
+let yy = 0;
 
-function scaleView(x){
-	vw = 2700*x - window.innerWidth;
-	vh = 2700*x - window.innerHeight;
+function scaleView(x,o){
+	vw = window.innerWidth - window.innerWidth*x;
+	vh = window.innerHeight - window.innerWidth*x;
+	xx = xx/o * x;
+	yy = yy/o * x;
+
+	// 限制位置
+	if(xx > 0)  xx = 0;
+	if(xx < vw)  xx = vw;
+	if(yy > 0)  yy = 0;
+	if(yy < vh)  yy = vh;
+	$("#map").css("background-position",xx+ "px " + yy+"px");
 }
-
 
 $("#map").mousedown(function(e){
 	mousedownflag = true;
@@ -20,9 +31,11 @@ $("#map").mousedown(function(e){
 $("#map").mouseup(function(){
 	mousedownflag = false
 });
- //position 位置
-let xx = 0;
-let yy = 0;
+$("#map").mouseout(function(){
+	mousedownflag = false
+	console.log("ss")
+});
+
 $(document).mousemove(function(e){
 	if(mousedownflag){
 		//移动的距离
@@ -36,9 +49,9 @@ $(document).mousemove(function(e){
 		yy = yy+y;
 		// 限制位置
 		if(xx > 0)  xx = 0;
-		if(xx < -vw)  xx = -vw;
+		if(xx < vw)  xx = vw;
 		if(yy > 0)  yy = 0;
-		if(yy < -vh)  yy = -vh;
+		if(yy < vh)  yy = vh;
 		$("#map").css("background-position",xx+ "px " + yy+"px");
 		
 	}
@@ -47,10 +60,11 @@ $(document).mousemove(function(e){
 let size = 1;
 let scrollFunc = function(e){
 	let flag =  e.deltaY>0 ? true:false; // true = down, false = up
+	let org = size;
 	flag ? size-- :size++;
 	if(size < 1)  size = 1;
 	if(size > 4)  size = 4;
-	this.scaleView(size)
+	this.scaleView(size,org)
 	$("#map").css("width",size+"00vw");
 	$("#map").css("height",size+"00vh");
 }
